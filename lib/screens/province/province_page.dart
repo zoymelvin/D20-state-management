@@ -1,4 +1,5 @@
 import 'package:d20_state_management/data/models/province_response.dart';
+import 'package:d20_state_management/widgets/inherited/province_inherited_widget.dart';
 import 'package:d20_state_management/widgets/province/province_item.dart';
 import 'package:d20_state_management/widgets/province/province_loader.dart';
 import 'package:flutter/material.dart';
@@ -49,17 +50,34 @@ class _ProvincePageState extends State<ProvincePage> {
 
   @override
   Widget build(BuildContext context) {
+    return ProvinceInheritedWidget(
+      provinceList: List<ProvinceResponse>.unmodifiable(_provinceList),
+      isLoading: _isLoading,
+      child: const ProvinceView(),
+    );
+  }
+}
+
+class ProvinceView extends StatelessWidget {
+  const ProvinceView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final provinceInheritedWidget = ProvinceInheritedWidget.of(context);
+    final isLoading = provinceInheritedWidget.isLoading;
+    final provinces = provinceInheritedWidget.provinceList;
+
     return Scaffold(
       appBar: AppBar(title: Text("Indonesia's Provinces")),
       body: Center(
-        child: _isLoading
+        child: isLoading
             ? ProvinceLoader()
-            : _provinceList.isEmpty
+            : provinces.isEmpty
             ? Center(child: Text("No provinces found"))
             : ListView.builder(
-                itemCount: _provinceList.length,
+                itemCount: provinces.length,
                 itemBuilder: (context, index) =>
-                    ProvinceItem(province: _provinceList[index]),
+                    ProvinceItem(province: provinces[index]),
               ),
       ),
     );
