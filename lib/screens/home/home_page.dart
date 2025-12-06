@@ -1,4 +1,3 @@
-import 'package:d20_state_management/screens/province/province_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -57,10 +56,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProvincePage()),
-                );
+                Navigator.pushNamed(context, '/provinces');
               },
               child: Text("Go to the Province Page"),
             ),
