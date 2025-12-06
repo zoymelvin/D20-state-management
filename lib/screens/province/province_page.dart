@@ -1,4 +1,6 @@
 import 'package:d20_state_management/data/models/province_response.dart';
+import 'package:d20_state_management/widgets/province/province_item.dart';
+import 'package:d20_state_management/widgets/province/province_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:d20_state_management/data/repositories/province_repository.dart';
 
@@ -11,7 +13,7 @@ class ProvincePage extends StatefulWidget {
 
 class _ProvincePageState extends State<ProvincePage> {
   bool _isLoading = false;
-  List<ProvinceResponse> provinceList = [];
+  final List<ProvinceResponse> _provinceList = [];
 
   Future<void> _getProvinces() async {
     setState(() {
@@ -23,7 +25,7 @@ class _ProvincePageState extends State<ProvincePage> {
       final data = await repository.getProvinces();
 
       if (data.isNotEmpty) {
-        provinceList
+        _provinceList
           ..clear()
           ..addAll(data);
       }
@@ -40,12 +42,26 @@ class _ProvincePageState extends State<ProvincePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _getProvinces();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Indonesia's Provinces")),
-      body: _isLoading
-          ? Column(mainAxisAlignment: MainAxisAlignment.center)
-          : Placeholder(),
+      body: Center(
+        child: _isLoading
+            ? ProvinceLoader()
+            : _provinceList.isEmpty
+            ? Center(child: Text("No provinces found"))
+            : ListView.builder(
+                itemCount: _provinceList.length,
+                itemBuilder: (context, index) =>
+                    ProvinceItem(province: _provinceList[index]),
+              ),
+      ),
     );
   }
 }
